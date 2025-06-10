@@ -1,5 +1,5 @@
 ### model
-model_name_or_path: /path/to/llama3.2-1b  
+model_name_or_path: /workspace/huangxiaoniu/diffu/llama-3.2-1B 
 print_param_status: true
 
 ### method
