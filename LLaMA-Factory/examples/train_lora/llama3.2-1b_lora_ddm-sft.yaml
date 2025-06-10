@@ -1,6 +1,10 @@
 ### model
-model_name_or_path: /workspace/huangxiaoniu/diffu/llama-3.2-1B 
+model_name_or_path: /workspace/huangxiaoniu/diffu/llama-3.2-1B
 print_param_status: true
+tokenizer_name: /workspace/huangxiaoniu/diffu/llama-3.2-1B
+add_bos_token: false
+trust_remote_code: true        
+
 
 ### method
 stage: ddm-sft
