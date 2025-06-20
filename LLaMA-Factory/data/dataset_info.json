@@ -609,7 +609,7 @@
 }
 {
   "protein_rna_dataset": {
-    "file_name": "train_data.jsonl",
+    "file_name": "rbp_train_data.jsonl",
     "formatting": "alpaca",
     "split": "train",
     "columns": {
@@ -619,7 +619,7 @@
     "num_samples": 107
   },
   "protein_rna_dataset_val": {
-    "file_name": "val_data.jsonl",
+    "file_name": "rbp_val_data.jsonl",
     "formatting": "alpaca",
     "split": "val",
     "columns": {
