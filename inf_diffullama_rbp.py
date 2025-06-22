@@ -38,11 +38,11 @@ def load_llama_and_resize(args):
     # 3) 载基座模型
     model = LlamaForCausalLM.from_pretrained(
         args.model_name,
-        config=config,                           # ← 传入新的 vocab_size
+        torch_dtype=torch.float16,
         device_map="auto",
-        _attn_implementation=args.flash_attn,
-        torch_dtype=torch.bfloat16,
+        attn_implementation="flash_attention_2" if args.flash_attn else "sdpa"
     )
+    #           ▲ 去掉前导下划线
 
     # 4) 调整 embedding / lm_head
     #    pad_to_multiple_of=8 可避免 Flash-Attn 的 shape 对齐问题
