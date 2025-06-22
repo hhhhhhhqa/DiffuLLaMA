@@ -39,10 +39,11 @@ def load_llama_and_resize(args):
     model = LlamaForCausalLM.from_pretrained(
         args.model_name,
         torch_dtype=torch.float16,
-        device_map="auto",
-        attn_implementation="flash_attention_2" if args.flash_attn else "sdpa"
-    )
-    #           ▲ 去掉前导下划线
+        device_map=None,                     # 关闭自动分片
+        low_cpu_mem_usage=True,              # 仍然可节省 CPU 内存
+        attn_implementation=("flash_attention_2"
+                             if args.flash_attn else "sdpa")
+    ).to("cuda:0")             
 
     # 4) 调整 embedding / lm_head
     #    pad_to_multiple_of=8 可避免 Flash-Attn 的 shape 对齐问题
