@@ -76,7 +76,7 @@ def main(args):
         train_data_dir=args.dataset,
         seed=3407,
     )
-        config = LlamaConfig.from_pretrained(args.model)
+    config = LlamaConfig.from_pretrained(args.model)
     config.rope_scaling = {
         "type": "none",    # 或 "linear"/"dynamic"
         "factor": 1.0,
