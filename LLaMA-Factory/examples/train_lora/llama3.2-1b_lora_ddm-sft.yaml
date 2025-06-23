@@ -1,7 +1,7 @@
 ### model
-model_name_or_path: /workspace/huangxiaoniu/diffu/llama-3.2-1B
+model_name_or_path: /workspace/huangxiaoniu/diffu/DiffuLLaMA/llama-3.2-1B
 print_param_status: true
-tokenizer_name: /workspace/huangxiaoniu/diffu/llama-3.2-1B
+tokenizer_name:/workspace/huangxiaoniu/diffu/aa_tokenizer
 add_bos_token: false
 trust_remote_code: true        
 
@@ -15,9 +15,9 @@ additional_target: embed_tokens
 lora_rank: 16
 
 ### dataset
-dataset: /path/to/slimpajama  
+dataset: 
 template: empty
-cutoff_len: 2048 
+cutoff_len: 512
 streaming: false
 overwrite_cache: true
 preprocessing_num_workers: 16
@@ -31,7 +31,7 @@ plot_loss: false
 overwrite_output_dir: true
 
 ### train
-per_device_train_batch_size: 4  
+per_device_train_batch_size: 1  
 gradient_accumulation_steps: 4  
 learning_rate:  3e-5  
 num_train_epochs: 3  
@@ -39,7 +39,7 @@ lr_scheduler_type: cosine
 warmup_steps: 1000  
 bf16: true
 ddp_timeout: 180000000
-anneal_steps: 10000  
+anneal_steps: 1000  
 shift: true
 remove_unused_columns: false
 
