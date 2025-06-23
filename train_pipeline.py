@@ -105,7 +105,6 @@ def main(args):
         args.model,
         config=cfg,
         torch_dtype=torch.bfloat16,
-        _attn_implementation="flash_attention_2",
     )
     model.resize_token_embeddings(len(tokenizer))  # 为 <sep> 扩容
 
