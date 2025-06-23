@@ -8,9 +8,7 @@ from tqdm import tqdm
 from model_llama import LlamaForCausalLM
 from flash_attn.losses.cross_entropy import CrossEntropyLoss
 from peft import LoraConfig, get_peft_model
-
-# 加载自定义 tokenizer
-from aa_tokenizer import ProteinCharTokenizer
+from transformers import PreTrainedTokenizerFast
 
 class AlpacaDataset(Dataset):
     def __init__(self, jsonl_path, tokenizer, max_length=512):
@@ -28,8 +26,14 @@ class AlpacaDataset(Dataset):
         protein = self.data[idx]["input"]
         rna = self.data[idx]["output"]
         text = f"{protein}<sep>{rna}"
-        input_ids = self.tokenizer.encode(text, max_length=self.max_length)
-        return input_ids
+        encoding = self.tokenizer(
+            text,
+            max_length=self.max_length,
+            padding="max_length",
+            truncation=True,
+            return_tensors="pt"
+        )
+        return encoding["input_ids"].squeeze()
 
 def create_dataloaders(
     batch_size: int,
@@ -39,7 +43,8 @@ def create_dataloaders(
     val_data_dir: Optional[str] = None,
     seed: int = 3407,
 ) -> tuple[DataLoader, DataLoader]:
-    tokenizer = ProteinCharTokenizer()
+    tokenizer = PreTrainedTokenizerFast.from_pretrained("/workspace/huangxiaoniu/diffu/aa_tokenizer")
+    tokenizer.add_tokens(["<sep>"])
     train_dataset = AlpacaDataset(train_data_dir, tokenizer, block_size)
     train_dataloader = DataLoader(
         train_dataset,
@@ -72,12 +77,15 @@ def main(args):
         seed=3407,
     )
 
-    tokenizer = ProteinCharTokenizer()
+    tokenizer = PreTrainedTokenizerFast.from_pretrained("/workspace/huangxiaoniu/diffu/aa_tokenizer")
+    tokenizer.add_tokens(["<sep>"])
     model = LlamaForCausalLM.from_pretrained(
         args.model,
         torch_dtype=torch.bfloat16,
         _attn_implementation="flash_attention_2",
     )
+    # 调整 embedding 层以匹配 tokenizer（添加 <sep>）
+    model.resize_token_embeddings(len(tokenizer))
     lora_config = LoraConfig(
         r=16,
         target_modules=["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj", "embed_tokens"],
@@ -91,7 +99,7 @@ def main(args):
     loss_func = CrossEntropyLoss(inplace_backward=True, reduction='none')
 
     sampling_eps = 1e-3
-    mask_token_id = tokenizer.token2id.get("<mask>", tokenizer.token2id["<unk>"])
+    mask_token_id = tokenizer.mask_token_id  # 4
     accelerator.print(f"Using mask_token_id: {mask_token_id}")
     progress_bar = tqdm(range(args.max_train_steps), disable=not accelerator.is_local_main_process)
     completed_steps = 0
