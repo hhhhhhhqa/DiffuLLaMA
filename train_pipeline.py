@@ -99,12 +99,13 @@ def main(args):
 
     # --------- 配置 & 模型 --------- #
     cfg = LlamaConfig.from_pretrained(args.model)
-    cfg.rope_scaling = {"type": "none", "factor": 1.0}
-
+    cfg.rope_scaling = None  
+    cfg._attn_implementation = "flash_attention_2"
     model = LlamaForCausalLM.from_pretrained(
         args.model,
         config=cfg,
         torch_dtype=torch.bfloat16,
+        device_map={"": torch.cuda.current_device()}
     )
     model.resize_token_embeddings(len(tokenizer))  # 为 <sep> 扩容
 
