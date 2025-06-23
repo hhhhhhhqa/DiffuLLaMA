@@ -1,50 +1,56 @@
 ### model
 model_name_or_path: /workspace/huangxiaoniu/diffu/DiffuLLaMA/llama-3.2-1B
-print_param_status: true
-tokenizer_name:/workspace/huangxiaoniu/diffu/aa_tokenizer
+tokenizer_name: /workspace/huangxiaoniu/diffu/aa_tokenizer
 add_bos_token: false
 trust_remote_code: true        
 
-
 ### method
 stage: ddm-sft
-do_train: true
 finetuning_type: lora
 lora_target: all
 additional_target: embed_tokens
 lora_rank: 16
+lora_alpha: 32
+lora_dropout: 0.05
 
 ### dataset
-dataset: 
-template: empty
-cutoff_len: 512
-streaming: false
-overwrite_cache: true
-preprocessing_num_workers: 16
+dataset:
+  train_file: /workspace/data/train.jsonl
+  validation_file: /workspace/data/eval.jsonl
+  template: alpaca
+  cutoff_len: 512
+  streaming: false
+  overwrite_cache: true
+  preprocessing_num_workers: 16
 
 ### output
 output_dir: output/llama3.2-1b-ddm
 logging_steps: 10
 save_steps: 2000
 save_total_limit: 4
-plot_loss: false
 overwrite_output_dir: true
+load_best_model_at_end: true
+metric_for_best_model: eval_loss
+greater_is_better: false
 
 ### train
 per_device_train_batch_size: 1  
 gradient_accumulation_steps: 4  
-learning_rate:  3e-5  
-num_train_epochs: 3  
+learning_rate: 3e-5  
+num_train_epochs: 3            # 或改用 max_steps
 lr_scheduler_type: cosine
 warmup_steps: 1000  
-bf16: true
+fp16: true
+bf16: false
 ddp_timeout: 180000000
 anneal_steps: 1000  
 shift: true
 remove_unused_columns: false
+seed: 42
 
 ### eval
 val_size: 256
 per_device_eval_batch_size: 4 
 eval_strategy: steps
 eval_steps: 200
+
