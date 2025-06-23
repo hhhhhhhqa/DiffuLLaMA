@@ -76,6 +76,24 @@ def main(args):
         train_data_dir=args.dataset,
         seed=3407,
     )
+        config = LlamaConfig.from_pretrained(args.model)
+    config.rope_scaling = {
+        "type": "none",    # 或 "linear"/"dynamic"
+        "factor": 1.0,
+        # 如果有 init_device 的需求，也可以加：
+        # "init_device": "cpu",
+    }
+
+    # 2) 带着改好的 config 来 load 模型
+    model = LlamaForCausalLM.from_pretrained(
+        args.model,
+        config=config,                        # <-- 传入改好的 config
+        torch_dtype=torch.bfloat16,
+        _attn_implementation="flash_attention_2",
+    )
+
+    # （加上这一行，让模型先到 GPU，避免 FlashAttention2 的警告）
+    model = model.to(accelerator.device)
 
     tokenizer = PreTrainedTokenizerFast.from_pretrained("/workspace/huangxiaoniu/diffu/aa_tokenizer")
     tokenizer.add_tokens(["<sep>"])
