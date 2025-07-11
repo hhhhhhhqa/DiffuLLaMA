@@ -12,9 +12,7 @@ from flash_attn.losses.cross_entropy import CrossEntropyLoss
 from peft import LoraConfig, get_peft_model
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
-from transformers import PreTrainedTokenizerFast, EncoderDecoderModel, set_seed，LlamaConfig
-
-from model_llama import LlamaModel, LlamaForCausalLM  # 本地 Flash-Attn 版 Llama
+from transformers import PreTrainedTokenizerFast, EncoderDecoderModel, set_seed，LlamaConfig,LlamaModel, LlamaForCausalLM 
 
 # ----------------------------- 数据集 ----------------------------- #
 
