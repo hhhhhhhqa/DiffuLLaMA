@@ -265,10 +265,10 @@ def main(args):
 # ----------------------------- CLI ----------------------------- #
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--batch-size", type=int, default=2)
-    parser.add_argument("--gradient-accumulate-every", type=int, default=4)
+    parser.add_argument("--batch-size", type=int, default=1)
+    parser.add_argument("--gradient-accumulate-every", type=int, default=2)
     parser.add_argument("--output-dir", type=str, required=True)
-    parser.add_argument("--max-train-steps", type=int, default=400)
+    parser.add_argument("--max-train-steps", type=int, default=10)
     parser.add_argument("--learning-rate", type=float, default=5e-5)
     parser.add_argument("--model", type=str, default="/workspace/huangxiaoniu/diffu/DiffuLLaMA/llama-3.2-1B")
     parser.add_argument("--dataset", type=str, default='/workspace/huangxiaoniu/diffu/DiffuLLaMA/DiffuLLaMA-training/train_data.jsonl')
