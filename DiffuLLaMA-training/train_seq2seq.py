@@ -27,8 +27,8 @@ class Prot2RNADataset(Dataset):
         jsonl_path: str,
         enc_tok: PreTrainedTokenizerFast,
         dec_tok: PreTrainedTokenizerFast,
-        max_len_enc: int = 512,
-        max_len_dec: int = 512,
+        max_len_enc: int = 1026,
+        max_len_dec: int = 1026,
     ):
         self.enc_tok = enc_tok
         self.dec_tok = dec_tok
@@ -272,7 +272,7 @@ if __name__ == "__main__":
     parser.add_argument("--learning-rate", type=float, default=5e-5)
     parser.add_argument("--model", type=str, required=True)
     parser.add_argument("--dataset", type=str, required=True)
-    parser.add_argument("--seq-length", type=int, default=512)
+    parser.add_argument("--seq-length", type=int, default=1026)
     parser.add_argument("--enc-tokenizer", type=str, required=True)
     parser.add_argument("--dec-tokenizer", type=str, required=True)
     parser.add_argument("--seed", type=int, default=42)
