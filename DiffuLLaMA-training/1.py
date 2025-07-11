@@ -82,21 +82,15 @@ def main(args):
     enc = LlamaModel.from_pretrained(
         args.model,
         torch_dtype=torch.bfloat16,
-        _attn_implementation="flash_attention_2",
     )
-
-    dec_cfg = LlamaConfig.from_pretrained(args.model)
-    dec_cfg.is_decoder = True
-    dec_cfg.add_cross_attention = True
-    dec_cfg.use_cache = False
 
     dec = LlamaForCausalLM.from_pretrained(
         args.model,
-        config=dec_cfg,
         torch_dtype=torch.bfloat16,
-        _attn_implementation="flash_attention_2",
+        is_decoder=True,
+        add_cross_attention=True,
+        use_cache=False,
     )
-
     # 双保险：确保两个标志位确实打开
     assert dec.config.is_decoder and dec.config.add_cross_attention, \
         "decoder 未正确设置交叉注意力"
