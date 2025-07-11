@@ -12,7 +12,7 @@ from flash_attn.losses.cross_entropy import CrossEntropyLoss
 from peft import LoraConfig, get_peft_model
 from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
-from transformers import PreTrainedTokenizerFast, EncoderDecoderModel, set_seed
+from transformers import PreTrainedTokenizerFast, EncoderDecoderModel, set_seed，LlamaConfig
 
 from model_llama import LlamaModel, LlamaForCausalLM  # 本地 Flash-Attn 版 Llama
 
@@ -110,13 +110,16 @@ def main(args):
         torch_dtype=torch.bfloat16,
         device_map={"": torch.cuda.current_device()},
     )
+    dec_config = LlamaConfig.from_pretrained(args.model,rope_scaling=None)
+    dec_config.is_decoder = True
+    dec_config.add_cross_attention = True
+    dec_config.use_cache = False 
     dec = LlamaForCausalLM.from_pretrained(
         args.model,
+        config=dec_config,
         torch_dtype=torch.bfloat16,
         device_map={"": torch.cuda.current_device()},
     )
-    dec.config.is_decoder = True
-    dec.config.add_cross_attention = True
     model = EncoderDecoderModel(encoder=enc, decoder=dec)
 
     # ------------------ Tokenizer ------------------ #
