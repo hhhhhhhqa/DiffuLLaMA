@@ -595,7 +595,7 @@ class LlamaSdpaAttention(LlamaAttention):
         cache_position: Optional[torch.LongTensor] = None,
         **kwargs,
     ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
-        #bi directional attention with SPDA API has not been implemented.
+        #bidirectional attention with SPDA API has not been implemented.
         raise NotImplementedError
         if output_attentions:
             # TODO: Improve this warning with e.g. `model.config.attn_implementation = "manual"` once this is implemented.
